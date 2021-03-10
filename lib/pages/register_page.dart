@@ -40,6 +40,7 @@ class _Form extends StatefulWidget {
   __formState createState() => __formState();
 }
 
+// ignore: camel_case_types
 class __formState extends State<_Form> {
   final nameCtrl = TextEditingController();
   final emailCtrl = TextEditingController();

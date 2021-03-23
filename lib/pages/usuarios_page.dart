@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iaa/models/usuario.dart';
+import 'package:iaa/services/auth_service.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class UsuariosPage extends StatefulWidget {
@@ -9,17 +11,15 @@ class UsuariosPage extends StatefulWidget {
 
 class _UsuariosPageState extends State<UsuariosPage> {
   final usuarios = [
-    Usuario(uuid: '1', nombre: 'J4', email: 'j4@test.com', online: true),
+    Usuario(uid: '1', nombre: 'J4', email: 'j4@test.com', online: true),
+    Usuario(uid: '2', nombre: 'Pavito', email: 'pavito@test.com', online: true),
     Usuario(
-        uuid: '2', nombre: 'Pavito', email: 'pavito@test.com', online: true),
+        uid: '3', nombre: 'Juistin', email: 'justino@test.com', online: true),
+    Usuario(uid: '4', nombre: 'Esquoc', email: 'esquok@test.com', online: true),
+    Usuario(uid: '5', nombre: 'Rivv', email: 'rivv@test.com', online: false),
     Usuario(
-        uuid: '3', nombre: 'Juistin', email: 'justino@test.com', online: true),
-    Usuario(
-        uuid: '4', nombre: 'Esquoc', email: 'esquok@test.com', online: true),
-    Usuario(uuid: '5', nombre: 'Rivv', email: 'rivv@test.com', online: false),
-    Usuario(
-        uuid: '6', nombre: 'Oraclesor', email: 'gato@test.com', online: false),
-    Usuario(uuid: '7', nombre: 'Svt', email: 'svt@test.com', online: true),
+        uid: '6', nombre: 'Oraclesor', email: 'gato@test.com', online: false),
+    Usuario(uid: '7', nombre: 'Svt', email: 'svt@test.com', online: true),
   ];
 
   RefreshController _refreshController =
@@ -27,17 +27,23 @@ class _UsuariosPageState extends State<UsuariosPage> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
+    final usuario = authService.usuario;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: IconButton(
           icon: Icon(Icons.exit_to_app),
           color: Colors.black87,
-          onPressed: () {},
+          onPressed: () {
+            AuthService.deleteToken();
+            Navigator.pushReplacementNamed(context, 'login');
+          },
         ),
         elevation: 1,
         title: Text(
-          'Contactos',
+          usuario.nombre,
           style: TextStyle(color: Colors.black87),
         ),
         actions: [

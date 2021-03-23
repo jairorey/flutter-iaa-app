@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:iaa/helpers/mostrar_alerta.dart';
+import 'package:iaa/services/auth_service.dart';
 import 'package:iaa/widgets/btn_success.dart';
 import 'package:iaa/widgets/custom_input.dart';
 import 'package:iaa/widgets/label_widget.dart';
 import 'package:iaa/widgets/logo_widget.dart';
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatelessWidget {
   @override
@@ -48,6 +51,7 @@ class __formState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
     return Container(
       margin: EdgeInsets.only(top: 40),
       padding: EdgeInsets.symmetric(horizontal: 50),
@@ -73,10 +77,21 @@ class __formState extends State<_Form> {
           ),
           BtnSuccess(
               text: 'Crear',
-              onPressed: () {
-                print(emailCtrl.text);
-                print(passwordCtrl.text);
-              })
+              onPressed: authService.autenticando
+                  ? null
+                  : () async {
+                      FocusScope.of(context).unfocus();
+                      final resp = await authService.register(
+                          nameCtrl.text.trim(),
+                          emailCtrl.text.trim(),
+                          passwordCtrl.text.trim());
+                      if (resp == true) {
+                        //   //TODO: Conectar a nuestro server token
+                        Navigator.pushReplacementNamed(context, 'usuarios');
+                      } else {
+                        mostrarAlerta(context, 'Registro incorrecto', resp);
+                      }
+                    }),
         ],
       ),
     );
